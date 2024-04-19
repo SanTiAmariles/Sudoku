@@ -8,21 +8,22 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #E6EBE0;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sudoku.controller.GameController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="473.0" prefWidth="667.0" style="-fx-background-color: #E6EBE0;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sudoku.controller.GameController">
    <children>
-      <GridPane fx:id="gridPaneSudoku" alignment="CENTER" layoutX="122.0" layoutY="54.0" prefHeight="292.0" prefWidth="369.0" style="-fx-hgap: 0;">
+      <GridPane fx:id="gridPaneSudoku" alignment="CENTER" layoutX="146.0" layoutY="55.0" prefHeight="364.0" prefWidth="376.0" style="-fx-hgap: 0;">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -38,17 +39,41 @@
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
+         <children>
+            <Line endX="265.8180236816406" endY="2.6226043701171875E-5" startX="-100.0" strokeWidth="4.5" GridPane.rowIndex="3" GridPane.valignment="BASELINE">
+               <GridPane.margin>
+                  <Insets top="-3.0" />
+               </GridPane.margin>
+            </Line>
+            <Line endX="265.8180236816406" endY="1.1777877807617188E-4" startX="-100.0" strokeWidth="4.5" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets top="40.0" />
+               </GridPane.margin>
+            </Line>
+            <Line endX="-99.99988555908203" endY="376.94873046875" startX="-99.99990844726562" startY="20.130695343017578" strokeWidth="4.5" GridPane.columnIndex="3" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets left="-5.8" />
+               </GridPane.margin>
+            </Line>
+            <Line endX="-99.99988555908203" endY="376.94873046875" startX="-99.99990844726562" startY="20.130695343017578" strokeWidth="4.5" GridPane.columnIndex="6" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets left="-6.2" />
+               </GridPane.margin>
+            </Line>
+         </children>
       </GridPane>
-      <VBox layoutY="373.0" prefHeight="43.0" prefWidth="612.0" style="-fx-background-color: #AF90A9;" />
-      <Label layoutX="268.0" layoutY="14.0" prefHeight="27.0" prefWidth="77.0" text="Sudoku" textFill="#4c3b4d">
+      <VBox alignment="CENTER" layoutY="425.0" prefHeight="54.0" prefWidth="667.0" style="-fx-background-color: #AF90A9;">
+         <children>
+            <Button fx:id="onHandleButtonHowToPlay" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="19.0" prefWidth="90.0" style="-fx-background-color: #4c3b4d;" text="Instrucciones" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Button>
+         </children></VBox>
+      <Label layoutX="295.0" layoutY="14.0" prefHeight="25.0" prefWidth="79.0" text="Sudoku" textFill="#4c3b4d">
          <font>
             <Font name="Berlin Sans FB" size="24.0" />
          </font>
       </Label>
-      <Button fx:id="onHandleButtonHowToPlay" layoutX="261.0" layoutY="367.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="90.0" style="-fx-background-color: #4c3b4d;" text="Instrucciones" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
-         <font>
-            <Font name="System Bold Italic" size="12.0" />
-         </font>
-      </Button>
    </children>
 </AnchorPane>

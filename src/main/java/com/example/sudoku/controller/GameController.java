@@ -12,46 +12,48 @@ import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Controller class for managing Sudoku game logic and UI interactions.
+ */
+
 public class GameController {
     @FXML
     private GridPane gridPaneSudoku;
+    // Lists to keep track of numbers in rows, columns, and 3x3 grids
+    private IList<Integer>[] rowNumbers;
+    private IList<Integer>[] columnNumbers;
+    private ArrayList<Integer>[] gridNumbers;
 
-    public boolean isNaN() {
-        return false;
-    }
-
-    private IList<Integer>[] numerosEnFila;
-    private IList<Integer>[] numerosEnColumna;
-    private ArrayList<Integer>[] numerosEnCuadro;
+     // Initializes the Sudoku game grid.
 
     @FXML
     public void initialize() {
         Random random = new Random();
-        numerosEnFila = new IList[9];
-        numerosEnColumna = new IList[9];
-        numerosEnCuadro = new ArrayList[9];
+        rowNumbers = new IList[9];
+        columnNumbers = new IList[9];
+        gridNumbers = new ArrayList[9];
 
         for (int i = 0; i < 9; i++) {
-            numerosEnFila[i] = new LinkedList<>();
-            numerosEnColumna[i] = new LinkedList<>();
-            numerosEnCuadro[i] = new ArrayList<>();
+            rowNumbers[i] = new LinkedList<>();
+            columnNumbers[i] = new LinkedList<>();
+            gridNumbers[i] = new ArrayList<>();
         }
-
+        // Generate Sudoku grid and fill with initial numbers
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 TextField textField = new TextField();
                 textField.setMaxWidth(37);
                 textField.setMaxHeight(37);
                 textField.setStyle("-fx-border-color: black;");
-                boolean mostrarInicialmente = random.nextBoolean();
-                if (mostrarInicialmente) {
-                    int numero = generarNumeroUnico(i, j, random);
-                    textField.setText(String.valueOf(numero));
+                boolean showInitially = random.nextBoolean();
+                if (showInitially) {
+                    int number = generateUniqueNumber(i, j, random);
+                    textField.setText(String.valueOf(number));
                     textField.setEditable(false);
-                    // Agregar número a las listas correspondientes
-                    numerosEnFila[i].addLast(numero);
-                    numerosEnColumna[j].addLast(numero);
-                    numerosEnCuadro[i / 3 * 3 + j / 3].add(numero);
+                    // Add number to corresponding lists
+                    rowNumbers[i].addLast(number);
+                    columnNumbers[j].addLast(number);
+                    gridNumbers[i / 3 * 3 + j / 3].add(number);
                 }
                 gridPaneSudoku.add(textField, i, j);
                 textFieldLetterGiven(textField, i, j);
@@ -59,57 +61,66 @@ public class GameController {
         }
     }
 
-    // Método para no generar el mismo número en una columna/fila
-    private int generarNumeroUnico(int fila, int columna, Random random) {
-        int numero;
-        int subgridRow = fila / 3;
-        int subgridCol = columna / 3;
+    // Method with the purpose of not generating the same number in a column/row
+    private int generateUniqueNumber(int row, int column, Random random) {
+        int number;
+        int subgridRow = row / 3;
+        int subgridCol = column / 3;
         do {
-            numero = random.nextInt(9) + 1;
-        } while (numerosEnFila[fila].contains(numero) || numerosEnColumna[columna].contains(numero) || numerosEnCuadro[subgridRow * 3 + subgridCol].contains(numero));
-        return numero;
+            number = random.nextInt(9) + 1;
+        } while (rowNumbers[row].contains(number) || columnNumbers[column].contains(number) || gridNumbers[subgridRow * 3 + subgridCol].contains(number));
+        return number;
     }
+    /**
+     * Sets event handler for text fields to validate user input.
+     * @param textField The text field to which the event handler is attached.
+     * @param i The row index of the text field.
+     * @param j The column index of the text field.
+     */
 
     private void textFieldLetterGiven(TextField textField, int i, int j) {
         textField.setOnKeyTyped(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
                 String input = textField.getText();
+                if (input.length()>1){
+                    showAlert("Cuidado", "Solo puedes ingresar un número a la vez");
+                    textField.deletePreviousChar();
+                }
                 if (!input.isEmpty()) {
                     try {
-                        int numero = Integer.parseInt(input);
-                        // Verificar si el número está duplicado en la columna
-                        if (numerosEnFila[i].contains(numero)) {
-                            mostrarAlerta("Número ya ubicado", "El número " + numero + " ya está presente en esta columna.");
+                        int number = Integer.parseInt(input);
+                        // Verify if the number is twice in the column
+                        if (rowNumbers[i].contains(number)) {
+                            showAlert("Número ya ubicado", "El número " + number + " ya está presente en esta columna.");
                             textField.clear();
                             return;
                         }
-                        // Verificar si el número está duplicado en la fila
-                        if (numerosEnColumna[j].contains(numero)) {
-                            mostrarAlerta("Número ya ubicado", "El número " + numero + " ya está presente en esta fila.");
+                        // Verify if the number is twice in the row
+                        if (columnNumbers[j].contains(number)) {
+                            showAlert("Número ya ubicado", "El número " + number + " ya está presente en esta fila.");
                             textField.clear();
                             return;
                         }
-                        if (numero==0){
-                            mostrarAlerta("Número inválido", "Por favor ingresa números del 1 al 9");
+                        if (number==0){
+                            showAlert("Número inválido", "Por favor ingresa números del 1 al 9");
                             textField.clear();
                             return;
 
                         }
-                        if(numerosEnColumna[j].contains(numero)&&numerosEnFila[i].contains(numero)){
-                            mostrarAlerta("Número ya ubicado", "El número " + numero + " ya está presente en la columa y la fila.");
+                        if(columnNumbers[j].contains(number)&& rowNumbers[i].contains(number)){
+                            showAlert("Número ya ubicado", "El número " + number + " ya está presente en la columa y la fila.");
                             textField.clear();
                             return;
                         }
-                        int cuadroIndex = (i / 3) * 3 + (j / 3);
-                        //cuadro de 3x3
-                        if (numerosEnCuadro[cuadroIndex].contains(numero)) {
-                            mostrarAlerta("Número duplicado", "El número " + numero + " ya está en el cuadro 3x3.");
+                        int indexSquare = (i / 3) * 3 + (j / 3);
+                        // Check if the number is duplicated in the 3x3 grid
+                        if (gridNumbers[indexSquare].contains(number)) {
+                            showAlert("Número duplicado", "El número " + number + " ya está en el cuadro 3x3.");
                             textField.clear();
-                            return; // Salir del método para evitar más validaciones
-                        }
+                                                    }
                     } catch (NumberFormatException e) {
-                        mostrarAlerta("Error", "Por favor ingresa números del 1 al 9");
+                        showAlert("Error", "Por favor ingresa números del 1 al 9");
                         textField.clear();
                     }
                 }
@@ -117,9 +128,9 @@ public class GameController {
         });
     }
 
-    // Shows an AlertBox
-    private void mostrarAlerta(String titulo, String mensaje) {
+    // Shows an alert
+    private void showAlert(String title, String message) {
         AlertBox alertBox = new AlertBox();
-        alertBox.showMessage(titulo, null, mensaje);
+        alertBox.showMessage(title, null, message);
     }
 }

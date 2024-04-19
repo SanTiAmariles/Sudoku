@@ -3,6 +3,7 @@ package com.example.sudoku.view;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import com.example.sudoku.controller.GameController;
 
@@ -18,6 +19,9 @@ public class GameStage extends Stage {
         gameController=loader.getController();
         Scene scene = new Scene(root);
         setTitle("Sudoku");
+        getIcons().add(
+                new Image(
+                        String.valueOf(getClass().getResource("/com/example/sudoku/images/favicon.png"))));
         setResizable(false);
         setScene(scene);
         show();

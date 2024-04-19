@@ -90,7 +90,13 @@ public class GameController {
                             textField.clear();
                             return;
                         }
-                        if(numerosEnColumna[j].contains(numero)||numerosEnFila[i].contains(numero)){
+                        if (numero==0){
+                            mostrarAlerta("Número inválido", "Por favor ingresa números del 1 al 9");
+                            textField.clear();
+                            return;
+
+                        }
+                        if(numerosEnColumna[j].contains(numero)&&numerosEnFila[i].contains(numero)){
                             mostrarAlerta("Número ya ubicado", "El número " + numero + " ya está presente en la columa y la fila.");
                             textField.clear();
                             return;
@@ -103,7 +109,7 @@ public class GameController {
                             return; // Salir del método para evitar más validaciones
                         }
                     } catch (NumberFormatException e) {
-                        mostrarAlerta("Error", "Por favor, sólo ingresa números");
+                        mostrarAlerta("Error", "Por favor ingresa números del 1 al 9");
                         textField.clear();
                     }
                 }
@@ -111,7 +117,7 @@ public class GameController {
         });
     }
 
-    // Método para mostrar una AlertBox
+    // Shows an AlertBox
     private void mostrarAlerta(String titulo, String mensaje) {
         AlertBox alertBox = new AlertBox();
         alertBox.showMessage(titulo, null, mensaje);

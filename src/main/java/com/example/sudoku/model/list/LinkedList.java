@@ -1,4 +1,4 @@
-package model.list;
+package com.example.sudoku.model.list;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

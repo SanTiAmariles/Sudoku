@@ -1,4 +1,4 @@
-package model.list;
+package com.example.sudoku.model.list;
 
 public interface IList<T> extends Iterable<T> {
     void addFirst(final T elem);

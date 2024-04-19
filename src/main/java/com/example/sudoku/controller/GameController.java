@@ -49,13 +49,11 @@ public class GameController {
             int subgridRow = i / 3;
             int subgridCol = j / 3;
             int cuadroIndex = subgridRow * 3 + subgridCol;
-
             // Verificar si ya hay 4 números en el cuadro 3x3
             if (numerosEnCuadro[cuadroIndex].size() == 4) {
                 gridPaneSudoku.add(textField, j, i);
                 continue;  // Continuar recorriendo
             }
-
             int numero;
             int intentos = 0;
             while (intentos < 5) {

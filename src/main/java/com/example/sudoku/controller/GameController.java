@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Controller class for managing Sudoku game logic and UI interactions.
+ * Controller class for managing Sudoku game logic.
  */
 
 public class GameController {
@@ -24,8 +24,10 @@ public class GameController {
     private IList<Integer>[] columnNumbers;
     private ArrayList<Integer>[] gridNumbers;
 
-     // Initializes the Sudoku game grid.
-
+    /**
+     * Initializes the Sudoku game grid with random numbers in each cell of the grid.
+     * Generates 4 random numbers in each 3x3 subgrid.
+     */
     @FXML
     public void initialize() {
         Random random = new Random();
@@ -44,16 +46,22 @@ public class GameController {
                 TextField textField = new TextField();
                 textField.setMaxWidth(37);
                 textField.setMaxHeight(37);
-                textField.setStyle("-fx-border-color: black;");
-                boolean showInitially = random.nextBoolean();
-                if (showInitially) {
+                textField.setStyle("-fx-border-color: white;");
+
+                // Calculate subgrid index
+                int subgridRow = i / 3;
+                int subgridCol = j / 3;
+                int subgridIndex = subgridRow * 3 + subgridCol;
+
+                // Generate only 4 random numbers per subgrid
+                if (gridNumbers[subgridIndex].size() < 4 && random.nextBoolean()) {
                     int number = generateUniqueNumber(i, j, random);
                     textField.setText(String.valueOf(number));
                     textField.setEditable(false);
                     // Add number to corresponding lists
                     rowNumbers[i].addLast(number);
                     columnNumbers[j].addLast(number);
-                    gridNumbers[i / 3 * 3 + j / 3].add(number);
+                    gridNumbers[subgridIndex].add(number);
                 }
                 gridPaneSudoku.add(textField, i, j);
                 textFieldLetterGiven(textField, i, j);
@@ -61,16 +69,29 @@ public class GameController {
         }
     }
 
-    // Method with the purpose of not generating the same number in a column/row
+    /**
+     * Generates a unique number for a cell in the Sudoku grid, ensuring it does not already exist
+     * in the same row, column, or 3x3 subgrid.
+     *
+     * @param row    The row index of the cell.
+     * @param column The column index of the cell.
+     * @param random An instance of the Random class for generating random numbers.
+     * @return A unique number for the specified cell.
+     */
     private int generateUniqueNumber(int row, int column, Random random) {
         int number;
+
+        // Calculate the row and column indexes of the 3x3 subgrid
         int subgridRow = row / 3;
         int subgridCol = column / 3;
+
+        // Generate a random number until it is unique in the row, column, and 3x3 subgrid
         do {
-            number = random.nextInt(9) + 1;
+            number = random.nextInt(9) + 1; // Generate a random number between 1 and 9
         } while (rowNumbers[row].contains(number) || columnNumbers[column].contains(number) || gridNumbers[subgridRow * 3 + subgridCol].contains(number));
         return number;
     }
+
     /**
      * Sets event handler for text fields to validate user input.
      * @param textField The text field to which the event handler is attached.
@@ -118,17 +139,24 @@ public class GameController {
                         if (gridNumbers[indexSquare].contains(number)) {
                             showAlert("Número duplicado", "El número " + number + " ya está en el cuadro 3x3.");
                             textField.clear();
-                                                    }
+                        }
                     } catch (NumberFormatException e) {
                         showAlert("Error", "Por favor ingresa números del 1 al 9");
                         textField.clear();
                     }
                 }
             }
+            
         });
     }
 
-    // Shows an alert
+    /**
+     * Shows an alert.
+     *
+     * @param title   Title of the alert.
+     * @param message Message of the alert.
+     */
+
     private void showAlert(String title, String message) {
         AlertBox alertBox = new AlertBox();
         alertBox.showMessage(title, null, message);

@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a71e3783-3459-48bc-bf2e-d5d69a3f4d6a" name="Changes" comment="&quot;Only numbers accepted (79-108)&quot;">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="a71e3783-3459-48bc-bf2e-d5d69a3f4d6a" name="Changes" comment="&quot;Update&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/sudoku/controller/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/sudoku/controller/GameController.java" afterDir="false" />
     </list>
@@ -36,7 +35,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;sam&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/SALOMÉ/OneDrive/Escritorio/Sudoku WINSTAGE- copia (1)&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/SALOMÉ/Downloads/sudokuP&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -69,6 +68,11 @@
       <workItem from="1713557837444" duration="8450000" />
       <workItem from="1713674281243" duration="4626000" />
       <workItem from="1713679021259" duration="25000" />
+      <workItem from="1713814733283" duration="552000" />
+      <workItem from="1713819080673" duration="1877000" />
+      <workItem from="1713900821400" duration="2440000" />
+      <workItem from="1713907066429" duration="946000" />
+      <workItem from="1713909082865" duration="2386000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Only numbers accepted (79-108)&quot;">
       <option name="closed" value="true" />

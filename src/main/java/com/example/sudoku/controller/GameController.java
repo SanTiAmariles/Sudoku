@@ -40,28 +40,40 @@ public class GameController {
             columnNumbers[i] = new LinkedList<>();
             gridNumbers[i] = new ArrayList<>();
         }
+
+        int initialNumbers [][]= {
+                {5,3,0,0,7,0,9,1,0},
+                {6,0,0,1,9,5,0,0,8},
+                {0,9,0,0,0,0,0,6,0},
+
+                {8,0,9,0,6,0,0,0,3},
+                {4,0,0,8,0,3,7,0,1},
+                {7,0,0,0,2,0,0,0,6},
+
+                {0,6,1,0,0,0,2,8,0},
+                {0,8,0,4,1,9,0,0,5},
+                {3,0,0,0,8,0,0,7,0}
+        };
+
         // Generate Sudoku grid and fill with initial numbers
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                TextField textField = new TextField();
+                int value = initialNumbers[j][i];
+                TextField textField = new TextField(value == 0 ? "" : String.valueOf(value));
                 textField.setMaxWidth(37);
                 textField.setMaxHeight(37);
                 textField.setStyle("-fx-border-color: white;");
+                textField.setEditable(value == 0); // Only editable if the value is not initially set
 
-                // Calculate subgrid index
                 int subgridRow = i / 3;
                 int subgridCol = j / 3;
                 int subgridIndex = subgridRow * 3 + subgridCol;
 
-                // Generate only 4 random numbers per subgrid
-                if (gridNumbers[subgridIndex].size() < 4 && random.nextBoolean()) {
-                    int number = generateUniqueNumber(i, j, random);
-                    textField.setText(String.valueOf(number));
-                    textField.setEditable(false);
+                if (value != 0) {
                     // Add number to corresponding lists
-                    rowNumbers[i].addLast(number);
-                    columnNumbers[j].addLast(number);
-                    gridNumbers[subgridIndex].add(number);
+                    rowNumbers[i].addLast(value);
+                    columnNumbers[j].addLast(value);
+                    gridNumbers[subgridIndex].add(value);
                 }
                 gridPaneSudoku.add(textField, i, j);
                 textFieldLetterGiven(textField, i, j);
@@ -78,19 +90,19 @@ public class GameController {
      * @param random An instance of the Random class for generating random numbers.
      * @return A unique number for the specified cell.
      */
-    private int generateUniqueNumber(int row, int column, Random random) {
-        int number;
-
-        // Calculate the row and column indexes of the 3x3 subgrid
-        int subgridRow = row / 3;
-        int subgridCol = column / 3;
-
-        // Generate a random number until it is unique in the row, column, and 3x3 subgrid
-        do {
-            number = random.nextInt(9) + 1; // Generate a random number between 1 and 9
-        } while (rowNumbers[row].contains(number) || columnNumbers[column].contains(number) || gridNumbers[subgridRow * 3 + subgridCol].contains(number));
-        return number;
-    }
+//    private int generateUniqueNumber(int row, int column, Random random) {
+//        int number;
+//
+//        // Calculate the row and column indexes of the 3x3 subgrid
+//        int subgridRow = row / 3;
+//        int subgridCol = column / 3;
+//
+//        // Generate a random number until it is unique in the row, column, and 3x3 subgrid
+//        do {
+//            number = random.nextInt(9) + 1; // Generate a random number between 1 and 9
+//        } while (rowNumbers[row].contains(number) || columnNumbers[column].contains(number) || gridNumbers[subgridRow * 3 + subgridCol].contains(number));
+//        return number;
+//    }
 
     /**
      * Sets event handler for text fields to validate user input.
@@ -111,12 +123,21 @@ public class GameController {
                 if (!input.isEmpty()) {
                     try {
                         int number = Integer.parseInt(input);
+
+
+                        // Verify if the number is in both the column and row
+                        if(columnNumbers[j].contains(number) && rowNumbers[i].contains(number)){
+                            showAlert("Número ya ubicado", "El número " + number + " ya está presente en la columa y la fila.");
+                            textField.clear();
+                            return;
+                        }
                         // Verify if the number is twice in the column
                         if (rowNumbers[i].contains(number)) {
                             showAlert("Número ya ubicado", "El número " + number + " ya está presente en esta columna.");
                             textField.clear();
                             return;
                         }
+
                         // Verify if the number is twice in the row
                         if (columnNumbers[j].contains(number)) {
                             showAlert("Número ya ubicado", "El número " + number + " ya está presente en esta fila.");
@@ -129,21 +150,25 @@ public class GameController {
                             return;
 
                         }
-                        if(columnNumbers[j].contains(number)&& rowNumbers[i].contains(number)){
-                            showAlert("Número ya ubicado", "El número " + number + " ya está presente en la columa y la fila.");
-                            textField.clear();
-                            return;
-                        }
+
                         int indexSquare = (i / 3) * 3 + (j / 3);
                         // Check if the number is duplicated in the 3x3 grid
                         if (gridNumbers[indexSquare].contains(number)) {
                             showAlert("Número duplicado", "El número " + number + " ya está en el cuadro 3x3.");
                             textField.clear();
                         }
+
+                        // Updates data structure
+                        rowNumbers[i].addLast(number);
+                        columnNumbers[j].addLast(number);
+                        gridNumbers[indexSquare].add(number);
+
+
                     } catch (NumberFormatException e) {
                         showAlert("Error", "Por favor ingresa números del 1 al 9");
                         textField.clear();
                     }
+
                 }
             }
             

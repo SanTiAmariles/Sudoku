@@ -3,15 +3,20 @@ package com.example.sudoku.controller;
 import com.example.sudoku.model.alert.AlertBox;
 import com.example.sudoku.model.list.IList;
 import com.example.sudoku.model.list.LinkedList;
+import com.example.sudoku.view.GameStage;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
 import java.util.ArrayList;
-
 
 /**
  * Controller class for managing Sudoku game logic.
@@ -23,10 +28,22 @@ public class GameController {
     private IList<Integer>[] rowNumbers;
     private IList<Integer>[] columnNumbers;
     private ArrayList<Integer>[] gridNumbers;
+    private GameStage gameStage;
+
+    private final int[][] finalSolution = {
+            {5, 3, 4, 6, 7, 8, 9, 1, 2},
+            {6, 7, 2, 1, 9, 5, 3, 4, 8},
+            {1, 9, 8, 3, 4, 2, 5, 6, 7},
+            {8, 5, 9, 7, 6, 1, 4, 2, 3},
+            {4, 2, 6, 8, 5, 3, 7, 9, 1},
+            {7, 1, 3, 9, 2, 4, 8, 5, 6},
+            {9, 6, 1, 5, 3, 7, 2, 8, 4},
+            {2, 8, 7, 4, 1, 9, 6, 3, 5},
+            {3, 4, 5, 2, 8, 6, 1, 7, 9}
+    };
 
     /**
      * Initializes the Sudoku game grid with random numbers in each cell of the grid.
-     * Generates 4 random numbers in each 3x3 subgrid.
      */
     @FXML
     public void initialize() {
@@ -70,6 +87,7 @@ public class GameController {
                 int subgridIndex = subgridRow * 3 + subgridCol;
 
                 if (value != 0) {
+                    System.out.println("Valor leído desde la matriz inicial: " + value);
                     // Add number to corresponding lists
                     rowNumbers[i].addLast(value);
                     columnNumbers[j].addLast(value);
@@ -90,20 +108,38 @@ public class GameController {
      */
     private void textFieldGivenNumber(TextField textField, int i, int j) {
         textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            /**
+             * Handles the key events for the text field. If the Backspace or Delete key is pressed,
+             * it checks if the text field is empty. If it is, it clears the corresponding row, column,
+             * and square in the Sudoku grid.
+             *
+             * @param keyEvent The KeyEvent representing the key being pressed.
+             */
             @Override
             public void handle(KeyEvent keyEvent) {
-                // if the user deletes a number, remove it from the arrays, so it does not interfere with the rows and columns
                 if (keyEvent.getCode().equals(KeyCode.BACK_SPACE) || keyEvent.getCode().equals(KeyCode.DELETE)) {
                     String input = textField.getText();
+                    System.out.println("Tecla borrar");
                     if (input.isEmpty()) {
                         int indexSquare = (i / 3) * 3 + (j / 3);
                         rowNumbers[i].clear();
                         columnNumbers[j].clear();
                         gridNumbers[indexSquare].clear();
                     }
+
                 }
             }
         });
+
+        /**
+         * Sets an event handler to handle key typed events on the text field.
+         * This event handler validates user input according to Sudoku rules
+         * and updates data structures storing Sudoku grid information.
+         * If the input is longer than one character, it displays a warning message
+         * and allows only one character input at a time.
+         *
+         * @param new EventHandler<KeyEvent> The event handler to be set on the text field.
+         */
 
         textField.setOnKeyTyped(new EventHandler<KeyEvent>() {
             @Override
@@ -169,11 +205,97 @@ public class GameController {
     }
 
     /**
-     * Shows an alert.
+     * Checks if the Sudoku puzzle is complete based on user input.
      *
-     * @param title   Title of the alert.
-     * @param message Message of the alert.
+     * @return true if the Sudoku puzzle is complete, false otherwise.
      */
+    private boolean isSudokuComplete() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                TextField textField = (TextField) getNodeByRowColumnIndex(j, i, gridPaneSudoku);
+                String userInput = textField.getText().trim();
+                System.out.println("Número introducido por el usuario en la fila " + j + " y columna " + i + ": " + userInput);
+                if (userInput.isEmpty()) {
+                    System.out.println("Campo vacío encontrado en la fila " + j + " y columna " + i);
+                    return false; // If there is an empty text field, the sudoku is incomplete
+                }
+                int userValue = Integer.parseInt(userInput);
+                int solutionValue = finalSolution[j][i]; // Get the value of the final solution
+                System.out.println("Valor de la solución en la fila " + j + " y columna " + i + ": " + solutionValue);
+                if (userValue != solutionValue) {
+                    System.out.println("Valor incorrecto encontrado en la fila " + j + " y columna " + i + ": " + userValue);
+                    return false; // If any value does not match with the solution, the sudoku is incomplete
+
+                }
+            }
+        }
+        return true; // If all the text fields are filled in and the values match, the sudoku is complete
+
+    }
+
+    /**
+     * Returns the node located at the specified row and column within a GridPane.
+     *
+     * @param row      The index of the row of the node to retrieve.
+     * @param column   The index of the column of the node to retrieve.
+     * @param gridPane The GridPane in which to search for the node.
+     * @return The node located at the specified row and column, or null if no node is found at that position.
+     */
+
+    private Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
+        Node result = null;
+        ObservableList<Node> childrens = gridPane.getChildren();
+
+        for (Node node : childrens) {
+            if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+                result = node;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Handles the action event when the "Verify" button is clicked.
+     * It checks if the Sudoku puzzle is complete and displays a corresponding message.
+     *
+     * @param event The action event triggered by clicking the "Verify" button.
+     */
+
+    @FXML
+    void onVerifyButtonClick(ActionEvent event) {
+        if (isSudokuComplete()) {
+            showAlert("Sudoku Completo", "¡Felicidades! Has completado el Sudoku. :)");
+        } else {
+            showAlert("Sudoku Incompleto", "Por favor complete todas las casillas antes de verificar. :(");
+        }
+    }
+    /**
+     * Handles the action event when the "Instrucciones" button is clicked.
+     * It displays instructions on how to play Sudoku.
+     *
+     * @param event The action event triggered by clicking the "Instrucciones" button.
+     */
+
+    @FXML
+    void onHandleButtonHowToPlay(ActionEvent event) {
+        String tittle="Intrucciones";
+        String header ="Bienvenide!";
+        String content ="Para inciar, digita un número en cada casilla " +
+                "\ndicho número no deberá coincidir con el mismo número" +
+                " ni en la fila, columna, cuadro 3x3" +
+                " Buena suerte, a devorar. :)";
+        AlertBox alertBox=new AlertBox();
+        alertBox.showMessage(tittle,header,content);
+    }
+    /**
+     * Displays an alert with the specified title and message.
+     *
+     * @param title   The title of the alert.
+     * @param message The content/message of the alert.
+     */
+
     private void showAlert(String title, String message) {
         AlertBox alertBox = new AlertBox();
         alertBox.showMessage(title, null, message);

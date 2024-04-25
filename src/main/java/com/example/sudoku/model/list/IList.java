@@ -4,6 +4,7 @@ public interface IList<T> extends Iterable<T> {
     void addFirst(final T elem);
     void addLast(final T elem);
     T getFirst();
+    T removeLastElement();
     T getLast();
     void removeFirst();
     void removeLast();

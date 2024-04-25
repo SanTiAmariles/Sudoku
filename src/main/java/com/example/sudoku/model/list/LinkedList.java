@@ -268,4 +268,30 @@ public class LinkedList<T> implements IList<T> {
             }
         };
     }
+
+
+    public T removeLastElement() {
+        if (isEmpty()) {
+            return null;
+        }
+
+        Node<T> currentNode = head;
+        Node<T> prevNode = null;
+
+        while (currentNode.next != null) {
+            prevNode = currentNode;
+            currentNode = currentNode.next;
+        }
+
+        if (prevNode == null) {
+            head = null;
+        } else {
+            prevNode.next = null;
+        }
+
+        T lastElement = currentNode.data;
+        currentNode = null; // Liberar la referencia
+
+        return lastElement;
+    }
 }

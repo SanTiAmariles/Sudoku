@@ -118,15 +118,36 @@ public class GameController {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode().equals(KeyCode.BACK_SPACE) || keyEvent.getCode().equals(KeyCode.DELETE)) {
-                    String input = textField.getText();
-                    System.out.println("Tecla borrar");
-                    if (input.isEmpty()) {
-                        int indexSquare = (i / 3) * 3 + (j / 3);
-                        rowNumbers[i].clear();
-                        columnNumbers[j].clear();
-                        gridNumbers[indexSquare].clear();
+                    removeNumberFromLists(textField, i, j);
+                    System.out.println("Row Numbers:");
+                    for (int row = 0; row < rowNumbers.length; row++) {
+                        System.out.print("Row " + row + ": ");
+                        IList<Integer> currentRow = rowNumbers[row];
+                        for (int i = 0; i < currentRow.size(); i++) {
+                            System.out.print(currentRow.get(i) + " ");
+                        }
+                        System.out.println();
                     }
 
+                    System.out.println("Column Numbers:");
+                    for (int col = 0; col < columnNumbers.length; col++) {
+                        System.out.print("Column " + col + ": ");
+                        IList<Integer> currentCol = columnNumbers[col];
+                        for (int i = 0; i < currentCol.size(); i++) {
+                            System.out.print(currentCol.get(i) + " ");
+                        }
+                        System.out.println();
+                    }
+
+                    System.out.println("Grid Numbers:");
+                    for (int grid = 0; grid < gridNumbers.length; grid++) {
+                        System.out.print("Grid " + grid + ": ");
+                        ArrayList<Integer> currentGrid = gridNumbers[grid];
+                        for (int i = 0; i < currentGrid.size(); i++) {
+                            System.out.print(currentGrid.get(i) + " ");
+                        }
+                        System.out.println();
+                    }
                 }
             }
         });
@@ -299,5 +320,39 @@ public class GameController {
     private void showAlert(String title, String message) {
         AlertBox alertBox = new AlertBox();
         alertBox.showMessage(title, null, message);
+
     }
+
+    /**
+     * Removes the last element from the given ArrayList if it is not empty.
+     *
+     * @param arrayList The ArrayList from which to remove the last element.
+     */
+    private void removeLastElement(ArrayList<Integer> arrayList) {
+        if (!arrayList.isEmpty()) {
+            arrayList.remove(arrayList.size() - 1);
+        }
+    }
+    /**
+     * Removes the number from the corresponding lists representing rows, columns, and 3x3 grids.
+     * based on the provided TextField's position (i, j). After removing the number, it updates the corresponding lists
+     * and removes the last element from the ArrayList representing the 3x3 grid to which the number belongs.
+     *
+     * @param textField The TextField containing the number to be removed.
+     * @param i         The row index of the TextField.
+     * @param j         The column index of the TextField.
+     */
+    private void removeNumberFromLists(TextField textField, int i, int j) {
+        String currentText = textField.getText();
+
+        rowNumbers[i].removeLast();
+        columnNumbers[j].removeLast();
+
+
+        int indexSquare = (i/3)*3+(j/3);
+
+        removeLastElement(gridNumbers[indexSquare]);
+
+    }
+
 }

@@ -11,7 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
-import java.util.Random;
+
 
 /**
  * Controller class for managing Sudoku game logic.
@@ -30,7 +30,6 @@ public class GameController {
      */
     @FXML
     public void initialize() {
-        Random random = new Random();
         rowNumbers = new IList[9];
         columnNumbers = new IList[9];
         gridNumbers = new ArrayList[9];
@@ -93,16 +92,15 @@ public class GameController {
         textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
+                // if the user deletes a number, remove it from the arrays, so it does not interfere with the rows and columns
                 if (keyEvent.getCode().equals(KeyCode.BACK_SPACE) || keyEvent.getCode().equals(KeyCode.DELETE)) {
                     String input = textField.getText();
-                    System.out.println("Tecla borrar");
                     if (input.isEmpty()) {
                         int indexSquare = (i / 3) * 3 + (j / 3);
                         rowNumbers[i].clear();
                         columnNumbers[j].clear();
                         gridNumbers[indexSquare].clear();
                     }
-
                 }
             }
         });

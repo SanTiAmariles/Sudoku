@@ -6,6 +6,7 @@ import com.example.sudoku.model.list.LinkedList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
@@ -15,7 +16,6 @@ import java.util.Random;
 /**
  * Controller class for managing Sudoku game logic.
  */
-
 public class GameController {
     @FXML
     private GridPane gridPaneSudoku;
@@ -41,25 +41,26 @@ public class GameController {
             gridNumbers[i] = new ArrayList<>();
         }
 
-        int initialNumbers [][]= {
-                {5,3,0,0,7,0,9,1,0},
-                {6,0,0,1,9,5,0,0,8},
-                {0,9,0,0,0,0,0,6,0},
+        // Create default matrix
+        int initialNumbers[][] = {
+                {0, 3, 0, 0, 7, 0, 9, 1, 0},
+                {6, 0, 2, 1, 9, 5, 0, 0, 8},
+                {0, 9, 0, 0, 0, 0, 0, 6, 0},
 
-                {8,0,9,0,6,0,0,0,3},
-                {4,0,0,8,0,3,7,0,1},
-                {7,0,0,0,2,0,0,0,6},
+                {8, 0, 9, 0, 6, 0, 0, 0, 3},
+                {4, 0, 0, 8, 0, 3, 7, 0, 1},
+                {7, 0, 0, 0, 2, 0, 0, 0, 6},
 
-                {0,6,1,0,0,0,2,8,0},
-                {0,8,0,4,1,9,0,0,5},
-                {3,0,0,0,8,0,0,7,0}
+                {0, 6, 1, 0, 0, 0, 2, 8, 0},
+                {0, 8, 0, 4, 1, 9, 0, 0, 5},
+                {3, 0, 0, 0, 8, 0, 0, 7, 0}
         };
 
         // Generate Sudoku grid and fill with initial numbers
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 int value = initialNumbers[j][i];
-                TextField textField = new TextField(value == 0 ? "" : String.valueOf(value));
+                TextField textField = new TextField(value == 0 ? "" : String.valueOf(value)); // if value equals 0, the result is ""
                 textField.setMaxWidth(37);
                 textField.setMaxHeight(37);
                 textField.setStyle("-fx-border-color: white;");
@@ -76,58 +77,56 @@ public class GameController {
                     gridNumbers[subgridIndex].add(value);
                 }
                 gridPaneSudoku.add(textField, i, j);
-                textFieldLetterGiven(textField, i, j);
+                textFieldGivenNumber(textField, i, j);
             }
         }
     }
 
     /**
-     * Generates a unique number for a cell in the Sudoku grid, ensuring it does not already exist
-     * in the same row, column, or 3x3 subgrid.
-     *
-     * @param row    The row index of the cell.
-     * @param column The column index of the cell.
-     * @param random An instance of the Random class for generating random numbers.
-     * @return A unique number for the specified cell.
-     */
-//    private int generateUniqueNumber(int row, int column, Random random) {
-//        int number;
-//
-//        // Calculate the row and column indexes of the 3x3 subgrid
-//        int subgridRow = row / 3;
-//        int subgridCol = column / 3;
-//
-//        // Generate a random number until it is unique in the row, column, and 3x3 subgrid
-//        do {
-//            number = random.nextInt(9) + 1; // Generate a random number between 1 and 9
-//        } while (rowNumbers[row].contains(number) || columnNumbers[column].contains(number) || gridNumbers[subgridRow * 3 + subgridCol].contains(number));
-//        return number;
-//    }
-
-    /**
      * Sets event handler for text fields to validate user input.
+     *
      * @param textField The text field to which the event handler is attached.
-     * @param i The row index of the text field.
-     * @param j The column index of the text field.
+     * @param i         The row index of the text field.
+     * @param j         The column index of the text field.
      */
+    private void textFieldGivenNumber(TextField textField, int i, int j) {
+        textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.BACK_SPACE) || keyEvent.getCode().equals(KeyCode.DELETE)) {
+                    String input = textField.getText();
+                    System.out.println("Tecla borrar");
+                    if (input.isEmpty()) {
+                        int indexSquare = (i / 3) * 3 + (j / 3);
+                        rowNumbers[i].clear();
+                        columnNumbers[j].clear();
+                        gridNumbers[indexSquare].clear();
+                    }
 
-    private void textFieldLetterGiven(TextField textField, int i, int j) {
+                }
+            }
+        });
+
         textField.setOnKeyTyped(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
                 String input = textField.getText();
-                if (input.length()>1){
+
+                if (input.length() > 1) {
                     showAlert("Cuidado", "Solo puedes ingresar un número a la vez");
                     textField.deletePreviousChar();
+                    int number = Integer.parseInt(input);
+                    rowNumbers[i].removeElement(number);
+                    columnNumbers[j].removeElement(number);
                 }
+
                 if (!input.isEmpty()) {
                     try {
                         int number = Integer.parseInt(input);
 
-
                         // Verify if the number is in both the column and row
-                        if(columnNumbers[j].contains(number) && rowNumbers[i].contains(number)){
-                            showAlert("Número ya ubicado", "El número " + number + " ya está presente en la columa y la fila.");
+                        if (columnNumbers[j].contains(number) && rowNumbers[i].contains(number)) {
+                            showAlert("Número ya ubicado", "El número " + number + " ya está presente en la columna y la fila.");
                             textField.clear();
                             return;
                         }
@@ -144,11 +143,10 @@ public class GameController {
                             textField.clear();
                             return;
                         }
-                        if (number==0){
+                        if (number == 0) {
                             showAlert("Número inválido", "Por favor ingresa números del 1 al 9");
                             textField.clear();
                             return;
-
                         }
 
                         int indexSquare = (i / 3) * 3 + (j / 3);
@@ -163,15 +161,12 @@ public class GameController {
                         columnNumbers[j].addLast(number);
                         gridNumbers[indexSquare].add(number);
 
-
                     } catch (NumberFormatException e) {
                         showAlert("Error", "Por favor ingresa números del 1 al 9");
                         textField.clear();
                     }
-
                 }
             }
-            
         });
     }
 
@@ -181,7 +176,6 @@ public class GameController {
      * @param title   Title of the alert.
      * @param message Message of the alert.
      */
-
     private void showAlert(String title, String message) {
         AlertBox alertBox = new AlertBox();
         alertBox.showMessage(title, null, message);
